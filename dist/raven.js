@@ -335,7 +335,6 @@ Raven.prototype = {
         // report on.
         try {
             var stack = TraceKit.computeStackTrace(ex);
-            stack.orig_ex = ex;
             this._handleStackInfo(stack, options);
         } catch(ex1) {
             if(ex !== ex1) {
@@ -801,8 +800,7 @@ Raven.prototype = {
             stackInfo.url,
             stackInfo.lineno,
             frames.slice(0, this._globalOptions.stackTraceLimit),
-            options,
-            stackInfo.orig_ex
+            options
         );
     },
 
@@ -874,7 +872,7 @@ Raven.prototype = {
         ];
     },
 
-    _processException: function(type, message, fileurl, lineno, frames, options, ex) {
+    _processException: function(type, message, fileurl, lineno, frames, options) {
         var stacktrace, fullMessage;
 
         if (!!this._globalOptions.ignoreErrors.test && this._globalOptions.ignoreErrors.test(message)) return;
@@ -910,8 +908,7 @@ Raven.prototype = {
                 values: [{
                     type: type,
                     value: message,
-                    stacktrace: stacktrace,
-                    orig_ex: ex
+                    stacktrace: stacktrace
                 }]
             },
             culprit: fileurl,
